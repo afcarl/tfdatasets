@@ -34,10 +34,9 @@ def data_to_image(image):
     return tf.clip_by_value(rescaled, 0.0, 1.0)
 
 
-
 if __name__ == '__main__':
     image = read_and_decode('records/celeba')
-    image_batch = tf.train.shuffle_batch([image], batch_size=128, capacity=1006, min_after_dequeue=1000, num_threads=8)
+    image_batch = tf.train.shuffle_batch([image], batch_size=128, capacity=11024, min_after_dequeue=10000, num_threads=16)
     display = data_to_image(image_batch)
     init_op = tf.global_variables_initializer()
     with tf.Session() as sess:
