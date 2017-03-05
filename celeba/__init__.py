@@ -35,8 +35,8 @@ def data_to_image(image):
 
 
 if __name__ == '__main__':
-    image = read_and_decode('records/celeba')
-    image_batch = tf.train.shuffle_batch([image], batch_size=128, capacity=11024, min_after_dequeue=10000, num_threads=16)
+    image = read_and_decode('/ssd_data/celeba_tfrecords/celeba')
+    image_batch = tf.train.shuffle_batch([image], batch_size=128, capacity=11024, min_after_dequeue=10000, num_threads=1)
     display = data_to_image(image_batch)
     init_op = tf.global_variables_initializer()
     with tf.Session() as sess:

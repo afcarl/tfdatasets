@@ -1,18 +1,18 @@
-from skdata.mnist.views import OfficialVectorClassification
 from tqdm import tqdm
 import numpy as np
 import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+mnist = input_data.read_data_sets('/data/mnist')
 
-data = OfficialVectorClassification()
-trIdx = data.sel_idxs[:]
+data = mnist.train.images
+labels = mnist.train.labels
 
-np.random.shuffle(trIdx)
-
-
-writer = tf.python_io.TFRecordWriter("mnist.tfrecords")
-for example_idx in tqdm(trIdx):
-    features = data.all_vectors[example_idx]
-    label = data.all_labels[example_idx]
+writers = [
+    tf.python_io.TFRecordWriter('records/mnist_{}.tfrecords'.format(i)) for i in range(0, 30)
+]
+for i, example_idx in enumerate(tqdm(range(0, data.shape[0]))):
+    features = data[example_idx]
+    label = labels[example_idx]
 
     example = tf.train.Example(
         features=tf.train.Features(
@@ -23,5 +23,8 @@ for example_idx in tqdm(trIdx):
                 float_list=tf.train.FloatList(value=features.astype("float"))),
     }))
     serialized = example.SerializeToString()
-    writer.write(serialized)
-writer.close()
+    writers[i%30].write(serialized)
+
+for i in range(0, 30):
+    writers[i].close()
+
